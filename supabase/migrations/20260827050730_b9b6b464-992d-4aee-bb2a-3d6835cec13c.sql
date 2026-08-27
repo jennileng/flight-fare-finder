@@ -1,0 +1,34 @@
+CREATE TABLE public.fare_watches (
+  id UUID NOT NULL DEFAULT gen_random_uuid() PRIMARY KEY,
+  user_id UUID NOT NULL REFERENCES auth.users ON DELETE CASCADE,
+  origin_code TEXT NOT NULL DEFAULT 'SJC',
+  destination TEXT NOT NULL,
+  destination_code TEXT NOT NULL,
+  target_price NUMERIC(10,2) NOT NULL,
+  notify_email BOOLEAN NOT NULL DEFAULT true,
+  is_active BOOLEAN NOT NULL DEFAULT true,
+  last_seen_price NUMERIC(10,2),
+  created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
+  updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now()
+);
+
+GRANT SELECT, INSERT, UPDATE, DELETE ON public.fare_watches TO authenticated;
+GRANT ALL ON public.fare_watches TO service_role;
+
+ALTER TABLE public.fare_watches ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Users can view their own fare watches" ON public.fare_watches FOR SELECT TO authenticated USING (auth.uid() = user_id);
+CREATE POLICY "Users can create their own fare watches" ON public.fare_watches FOR INSERT TO authenticated WITH CHECK (auth.uid() = user_id);
+CREATE POLICY "Users can update their own fare watches" ON public.fare_watches FOR UPDATE TO authenticated USING (auth.uid() = user_id) WITH CHECK (auth.uid() = user_id);
+CREATE POLICY "Users can delete their own fare watches" ON public.fare_watches FOR DELETE TO authenticated USING (auth.uid() = user_id);
+
+CREATE OR REPLACE FUNCTION public.update_updated_at_column() RETURNS TRIGGER AS $$
+BEGIN
+  NEW.updated_at = now();
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql SET search_path = public;
+
+CREATE TRIGGER update_fare_watches_updated_at BEFORE UPDATE ON public.fare_watches FOR EACH ROW EXECUTE FUNCTION public.update_updated_at_column();
+
+CREATE INDEX fare_watches_user_id_idx ON public.fare_watches (user_id);
