@@ -1,27 +1,14 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { Link } from "react-router-dom";
 import { BellRing, MailCheck, Plane, Target, Wallet } from "lucide-react";
 
 import heroImage from "@/assets/hero-flight.jpg";
 import { SiteHeader } from "@/components/SiteHeader";
 import { Button } from "@/components/ui/button";
+import { useDocumentHead } from "@/hooks/use-document-head";
 
 const TITLE = "Flight price notifier — Fare alerts from San Jose (SJC)";
 const DESCRIPTION =
   "Set a route from San Jose and a target price. We watch the cheapest fare and email you the moment it drops to or below your budget.";
-
-export const Route = createFileRoute("/")({
-  head: () => ({
-    meta: [
-      { title: TITLE },
-      { name: "description", content: DESCRIPTION },
-      { property: "og:title", content: TITLE },
-      { property: "og:description", content: DESCRIPTION },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
-    ],
-  }),
-  component: Landing,
-});
 
 const steps = [
   {
@@ -50,7 +37,9 @@ const routes = [
   { city: "New York", code: "JFK", typical: 312, watch: 199 },
 ];
 
-function Landing() {
+export default function Landing() {
+  useDocumentHead({ title: TITLE, description: DESCRIPTION });
+
   return (
     <div className="min-h-screen bg-cabin">
       <SiteHeader />

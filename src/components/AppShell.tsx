@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "@tanstack/react-router";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
 import { BellRing, LayoutDashboard, LogOut, Plane, Settings } from "lucide-react";
 import type { ReactNode } from "react";
@@ -11,6 +11,18 @@ const nav = [
   { to: "/alerts", label: "Alerts", icon: BellRing },
   { to: "/settings", label: "Settings", icon: Settings },
 ] as const;
+
+const navLinkClassName = ({ isActive }: { isActive: boolean }) =>
+  [
+    "flex items-center gap-3 rounded-xl px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground",
+    isActive ? "bg-secondary text-foreground" : "",
+  ].join(" ");
+
+const mobileNavLinkClassName = ({ isActive }: { isActive: boolean }) =>
+  [
+    "flex-1 rounded-xl border border-border px-3 py-2 text-center text-xs text-muted-foreground",
+    isActive ? "bg-secondary text-foreground" : "",
+  ].join(" ");
 
 export function AppShell({
   title,
@@ -28,7 +40,7 @@ export function AppShell({
     await queryClient.cancelQueries();
     queryClient.clear();
     await supabase.auth.signOut();
-    navigate({ to: "/auth", replace: true });
+    navigate("/auth", { replace: true });
   }
 
   return (
@@ -52,15 +64,10 @@ export function AppShell({
         <aside className="hidden w-52 shrink-0 lg:block">
           <nav className="space-y-1">
             {nav.map((item) => (
-              <Link
-                key={item.to}
-                to={item.to}
-                className="flex items-center gap-3 rounded-xl px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
-                activeProps={{ className: "bg-secondary text-foreground" }}
-              >
+              <NavLink key={item.to} to={item.to} className={navLinkClassName}>
                 <item.icon className="h-4 w-4" aria-hidden="true" />
                 {item.label}
-              </Link>
+              </NavLink>
             ))}
           </nav>
         </aside>
@@ -72,14 +79,9 @@ export function AppShell({
 
           <nav className="mt-12 flex gap-2 lg:hidden">
             {nav.map((item) => (
-              <Link
-                key={item.to}
-                to={item.to}
-                className="flex-1 rounded-xl border border-border px-3 py-2 text-center text-xs text-muted-foreground"
-                activeProps={{ className: "bg-secondary text-foreground" }}
-              >
+              <NavLink key={item.to} to={item.to} className={mobileNavLinkClassName}>
                 {item.label}
-              </Link>
+              </NavLink>
             ))}
           </nav>
         </main>

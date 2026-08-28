@@ -1,21 +1,15 @@
-import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 
 import { AppShell } from "@/components/AppShell";
+import { useDocumentHead } from "@/hooks/use-document-head";
 import { supabase } from "@/integrations/supabase/client";
 
-export const Route = createFileRoute("/_authenticated/alerts")({
-  head: () => ({
-    meta: [
-      { title: "Alerts — Flight price notifier" },
-      { name: "description", content: "Fare drop emails sent for your San Jose routes." },
-      { name: "robots", content: "noindex" },
-    ],
-  }),
-  component: Alerts,
-});
+export default function Alerts() {
+  useDocumentHead({
+    title: "Alerts — Flight price notifier",
+    description: "Fare drop emails sent for your San Jose routes.",
+  });
 
-function Alerts() {
   const watches = useQuery({
     queryKey: ["fare-watches"],
     queryFn: async () => {

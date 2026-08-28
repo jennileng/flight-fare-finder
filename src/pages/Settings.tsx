@@ -1,21 +1,15 @@
-import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 
 import { AppShell } from "@/components/AppShell";
+import { useDocumentHead } from "@/hooks/use-document-head";
 import { supabase } from "@/integrations/supabase/client";
 
-export const Route = createFileRoute("/_authenticated/settings")({
-  head: () => ({
-    meta: [
-      { title: "Settings — Flight price notifier" },
-      { name: "description", content: "Your account and notification email for fare alerts." },
-      { name: "robots", content: "noindex" },
-    ],
-  }),
-  component: Settings,
-});
+export default function Settings() {
+  useDocumentHead({
+    title: "Settings — Flight price notifier",
+    description: "Your account and notification email for fare alerts.",
+  });
 
-function Settings() {
   const [email, setEmail] = useState<string | null>(null);
 
   useEffect(() => {

@@ -1,4 +1,3 @@
-import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { Plus, Trash2 } from "lucide-react";
@@ -9,21 +8,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
+import { useDocumentHead } from "@/hooks/use-document-head";
 import { supabase } from "@/integrations/supabase/client";
-
-export const Route = createFileRoute("/_authenticated/dashboard")({
-  head: () => ({
-    meta: [
-      { title: "Fare watches — Flight price notifier" },
-      {
-        name: "description",
-        content: "Manage the San Jose routes and target prices we watch for you.",
-      },
-      { name: "robots", content: "noindex" },
-    ],
-  }),
-  component: Dashboard,
-});
 
 type FareWatch = {
   id: string;
@@ -36,7 +22,12 @@ type FareWatch = {
   created_at: string;
 };
 
-function Dashboard() {
+export default function Dashboard() {
+  useDocumentHead({
+    title: "Fare watches — Flight price notifier",
+    description: "Manage the San Jose routes and target prices we watch for you.",
+  });
+
   const queryClient = useQueryClient();
   const [destination, setDestination] = useState("");
   const [code, setCode] = useState("");
