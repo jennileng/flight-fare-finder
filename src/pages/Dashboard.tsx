@@ -4,6 +4,7 @@ import { Plus, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 
 import { AppShell } from "@/components/AppShell";
+import { PlanSubscribe } from "@/components/PlanSubscribe";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -97,6 +98,16 @@ export default function Dashboard() {
       title="Fare watches"
       description="Every watch tracks the cheapest fare from San Jose (SJC). We email you when it hits your target."
     >
+      <div className="mb-8 space-y-3">
+        <div>
+          <h2 className="font-display text-xl font-semibold">機票降價通知</h2>
+          <p className="text-sm text-muted-foreground">
+            選擇路線並設定目標價格（TWD），達標時我們會寄信通知你。
+          </p>
+        </div>
+        <PlanSubscribe />
+      </div>
+
       <form
         className="surface-panel grid gap-4 rounded-2xl p-6 shadow-lift sm:grid-cols-[1fr_120px_140px_auto] sm:items-end"
         onSubmit={(e) => {
